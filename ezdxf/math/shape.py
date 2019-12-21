@@ -4,7 +4,7 @@
 from typing import Union, Iterable, List, TYPE_CHECKING
 import math
 from .vector import Vec2
-from .construct2d import ConstructionTool
+from .construct2d import ConstructionTool, convex_hull
 from .offset2d import offset_vertices_2d
 from .bbox import BoundingBox2d
 
@@ -66,33 +66,7 @@ class Shape2d(ConstructionTool):
         if center is not None:
             self.translate(center)  # faster than a Matrix44 multiplication
 
-    # Sequence interface
-    def __len__(self) -> int:
-        """ Returns `count` of vertices. """
-        return len(self.vertices)
-
-    def __getitem__(self, item: Union[int, slice]) -> Vec2:
-        """ Get vertex by index `item`, supports ``list`` like slicing. """
-        return self.vertices[item]
-
-    # limited List interface
-    def append(self, vertex: 'Vertex') -> None:
-        """ Append `vertex`.
-        Args:
-             vertex: vertex as :class:`Vec2` compatible object
-
-        """
-        self.vertices.append(Vec2(vertex))
-
-    def extend(self, vertices: Iterable) -> None:
-        """ Append multiple `vertices`.
-        Args:
-             vertices: iterable of vertices as :class:`Vec2` compatible objects
-
-        """
-        self.vertices.extend(Vec2.generate(vertices))
-
-    def offset(self, offset, closed=False) -> 'Shape2d':
+    def offset(self, offset: float, closed: bool = False) -> 'Shape2d':
         """
         Returns a new offset shape, for more information see also :func:`ezdxf.math.offset_vertices_2d` function.
 
@@ -104,4 +78,36 @@ class Shape2d(ConstructionTool):
             closed: ``True`` to handle as closed shape
 
         """
-        return Shape2d(offset_vertices_2d(self.vertices, offset=offset, closed=closed))
+        return self.__class__(offset_vertices_2d(self.vertices, offset=offset, closed=closed))
+
+    def convex_hull(self) -> 'Shape2d':
+        """ Returns convex hull as new shape. """
+        return self.__class__(convex_hull(self.vertices))
+
+    # Sequence interface
+    def __len__(self) -> int:
+        """ Returns `count` of vertices. """
+        return len(self.vertices)
+
+    def __getitem__(self, item: Union[int, slice]) -> Vec2:
+        """ Get vertex by index `item`, supports ``list`` like slicing. """
+        return self.vertices[item]
+
+    # limited List interface
+    def append(self, vertex: 'Vertex') -> None:
+        """ Append single `vertex`.
+
+        Args:
+             vertex: vertex as :class:`Vec2` compatible object
+
+        """
+        self.vertices.append(Vec2(vertex))
+
+    def extend(self, vertices: Iterable) -> None:
+        """ Append multiple `vertices`.
+
+        Args:
+             vertices: iterable of vertices as :class:`Vec2` compatible objects
+
+        """
+        self.vertices.extend(Vec2.generate(vertices))

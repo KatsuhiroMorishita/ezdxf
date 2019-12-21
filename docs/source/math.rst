@@ -99,6 +99,8 @@ UCS Class
 
     .. autoattribute:: uz
 
+    .. autoattribute:: is_cartesian
+
     .. automethod:: to_wcs
 
     .. automethod:: points_to_wcs
@@ -114,6 +116,22 @@ UCS Class
     .. automethod:: from_wcs
 
     .. automethod:: points_from_wcs
+
+    .. automethod:: rotate
+
+    .. automethod:: from_x_axis_and_point_in_xy
+
+    .. automethod:: from_x_axis_and_point_in_xz
+
+    .. automethod:: from_y_axis_and_point_in_xy
+
+    .. automethod:: from_y_axis_and_point_in_yz
+
+    .. automethod:: from_z_axis_and_point_in_xz
+
+    .. automethod:: from_z_axis_and_point_in_yz
+
+    .. automethod:: render_axis
 
 Vector
 ------
@@ -679,13 +697,17 @@ Shape2d
 
     .. attribute:: vertices
 
-        list of :class:`Vec2` objects
+        List of :class:`Vec2` objects
 
     .. autoattribute:: bounding_box
 
     .. automethod:: __len__
 
     .. automethod:: __getitem__(item) -> Vec2
+
+    .. automethod:: append
+
+    .. automethod:: extend
 
     .. automethod:: move
 
@@ -699,11 +721,9 @@ Shape2d
 
     .. automethod:: rotate_rad
 
-    .. automethod:: append
-
-    .. automethod:: extend
-
     .. automethod:: offset
+
+    .. automethod:: convex_hull
 
 
 .. _Curve Global Interpolation: http://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/INT-APP/CURVE-INT-global.html

@@ -118,16 +118,18 @@ def readfile(filename: str, encoding: str = None, legacy_mode: bool = False, fil
         raise IOError("File '{}' is not a DXF file.".format(filename))
 
     info = dxf_file_info(filename)
-    en = ""
     if encoding is not None:
-        en = encoding
-    else:
-        en = info.encoding
-    with open(filename, mode='rt', encoding=en, errors='ignore') as fp:
+        # override default encodings if absolute necessary
+        info.encoding = encoding
+    with open(filename, mode='rt', encoding=info.encoding, errors='ignore') as fp:
         doc = read(fp, legacy_mode=legacy_mode, filter_stack=filter_stack)
 
     doc.filename = filename
-    doc.encoding = en
+    if encoding is not None and is_supported_encoding(encoding):
+        # store overridden encoding if supported by AutoCAD, else default encoding 'cp1252' is used
+        # as document encoding.
+        doc.encoding = encoding
+
     return doc
 
 
