@@ -122,7 +122,7 @@ def readfile(filename: str, encoding: str = None, legacy_mode: bool = False, fil
     if encoding is not None:
         en = encoding
     else:
-        en = info.encoding,
+        en = info.encoding
     with open(filename, mode='rt', encoding=en, errors='ignore') as fp:
         doc = read(fp, legacy_mode=legacy_mode, filter_stack=filter_stack)
 
